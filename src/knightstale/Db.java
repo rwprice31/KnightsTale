@@ -1,11 +1,9 @@
+package knightstale;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
- 
-// Joseph Cox modified Code off http://en.wikibooks.org/wiki/Java_JDBC_using_SQLite/Example_base_class
-
 
  
 /** Database connection class & utilities **/
@@ -20,9 +18,9 @@ public class Db {
 
  
     //This will connect to the database 
-    public Db(String sDriverToLoad, String sUrlToLoad) throws Exception
+    public Db() throws Exception
     {
-        init(sDriverToLoad, sUrlToLoad);
+        init("org.sqlite.JDBC", "jdbc:sqlite:C:/Users/david/Documents/Java/KnightsTale/AKnightTale.db");
     }
  
     public void init(String sDriverVar, String sUrlVar) throws Exception
