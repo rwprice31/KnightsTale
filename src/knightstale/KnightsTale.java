@@ -6,42 +6,8 @@ import java.util.Scanner;
 
 public class KnightsTale 
 {
+	// global variable to help keep track of user status
 	public static UserStatistics userstats = new UserStatistics();
-	
-	public static enum RoomType {
-		None(0),
-		Fight(1),
-		Puzzle(2),
-		Boss(3),
-		Stair(4);
-		
-		public int value;
-		RoomType(int p){
-			value = p;
-		}
-		public int getValue(){
-			return value;
-		}
-	}
-	/*
-	public static enum CharacterType{
-		Hero(1),
-		Monster(2)
-	}
-	public static enum ElementType{
-		None(0),
-		Earth(1),
-		Fire(2),
-		Water(3),
-		Wind(4)
-	}
-	public static enum ItemType{
-		Hero(1),
-		Monster(2),
-		Puzzle(3),
-		Room(4)
-	}*/
-	
 	
 	
 	public static void main(String[] args) throws Exception 
@@ -50,6 +16,7 @@ public class KnightsTale
 		
 		System.out.println("Welcome to Knights Tale the game.");
 		
+		// first loop - wait for user to enter a selection of load an old game or create a new game.
 		while (loggedIn == false)
 		{
 			Scanner userInput = new Scanner(System.in);
@@ -61,12 +28,14 @@ public class KnightsTale
 				String username = "";
 				while (username=="")
 				{
+					// if the desire choise is to LOAD, then user must specify a saved name to load
 					if (Choice.toUpperCase().equals("L"))
 					{
 						System.out.println("Please enter the username of the game you wish to load:");
 						username = userInput.nextLine();	
 						try
 						{
+							//load userstats with contents from DB
 							userstats = new UserStatistics(username);							
 							loggedIn = true;
 						}
@@ -76,28 +45,26 @@ public class KnightsTale
 							System.out.println("Unable to load the desired game.");
 						}						
 					}
+					// if selected to Start a new game 
 					else 
 					{
-						username = "NewUser";
-						CreateUserStats(username);
-						userstats = new UserStatistics(username);						
-						CreateMap(userstats.gameNumber);
-						CreateRooms(userstats.gameNumber);
-						//createrooms
-						//createmonsters
-						
-					}
-									
-					try
-					{
-						userstats = new UserStatistics(username);
-						loggedIn = true;
-					}
-					catch(Exception ex)
-					{
-						username = "";
-						System.out.println("Unable to load the desired game.");
-					}
+						try
+						{
+							// setup all needed userstats/maps/rooms/monsters to have all info for a new game.
+							username = "NewUser";
+							CreateUserStats(username);
+							userstats = new UserStatistics(username);						
+							CreateMap();
+							userstats = new UserStatistics(username);
+							CreateRooms();
+							loggedIn = true;
+						}
+						catch (Exception ex) 
+						{
+							username = "";
+							System.out.println("Unable to initiate a new game.");
+						}
+					}													
 				}
 								
 			}
@@ -120,6 +87,10 @@ public class KnightsTale
 
 	
 	
+	
+	
+	// Method used to check user entered choices to ensure 
+	// the selection is valid
 	public static boolean isValidSelection(String Choice)
 	{
 		if (Choice.toUpperCase().equals("L") | Choice.toUpperCase().equals("N") ){
@@ -130,48 +101,129 @@ public class KnightsTale
 		}
 	}
 
+	// Method to create the user stats for new game
 	private static void CreateUserStats(String userID) throws Exception
 	{
-		userstats.CreateUserStatistics(userID, 1, 10, 1, 0);
+		userstats.CreateUserStatistics(userID, 1, 10, 1, 0, 0);
 	}
 	
-	private static void CreateMap(int gameNumber) throws Exception
+	// Method use to create a map for new game
+	private static void CreateMap() throws Exception
 	{
 		Db db = new Db();
 		db.getConnection();
-		db.executeStmt("insert Into Maps values('"+ gameNumber +"'");
-		db.closeConnection();
+		
+		db.executeStmt("INSERT INTO Maps VALUES(NULL," + userstats.gameNumber + ")" );
+		ResultSet rs = db.executeQry("SELECT MapID FROM Maps WHERE gameNumber = " + userstats.gameNumber);
+		
+		//update userstats with mapid
+		try 
+		{ 
+			int tmp_mapid = rs.getInt("MapID");
+			db.executeStmt("UPDATE UserStatistics SET MapID = " + tmp_mapid + " WHERE gameNumber = "+ userstats.gameNumber);
+		}
+		catch(Exception ex){}
+		
+		db.closeConnection();		
 	}
 
-	private static void CreateRooms(int gameNumber) 
+	// Method use to create all rooms to be populated in the map layout of the game.
+	private static void CreateRooms() throws Exception 
 	{
 		// TODO auto generate 50 rooms specific to this gamenumber
-		
+		int r = 1; //room #
 		for(int x=0; x<5;x++) // 5 levels
-		{
-			for(int y=0; y<10; y++){
+		{		
+			Room insertRoom = new Room();
+			// first 8 random rooms
+			for(int y=1; y<=8; y++,r++){
+				insertRoom = new Room();
+				insertRoom.RoomNumber = r;
+				
 				//create room
-				switch(GetRandomNumber(1,4))				
+				switch(GetRandomNumber(0,3))				
 				{
 				case 1:
 					//Boss
+					insertRoom.RoomType="Boss";
+					insertRoom.MapID = userstats.mapID;
+					//get 3 different monsters (character ID)
+					insertRoom.Character1 = getRandomCharacter(true);
+					//character2id = getRandomCharacter(true);
+					//character3id = getRandomCharacter(true);
+					
+					//get random room objects
+					insertRoom.Item1 = getRandomRoomItem();
+					insertRoom.Item2 = getRandomRoomItem();
+					insertRoom.Item3 = getRandomRoomItem();
+					
+					insertRoom.CreateRoom();
 					break;
 				case 2:
 					//Fight
+					insertRoom.RoomType="Fight";
+					insertRoom.MapID = userstats.mapID;
+					//get 3 different monsters (character ID)
+					insertRoom.Character1 = getRandomCharacter(false);
+					//character2id = getRandomCharacter(false);
+					//character3id = getRandomCharacter(false);
+					
+					//get random room objects
+					insertRoom.Item1 = getRandomRoomItem();
+					insertRoom.Item2 = getRandomRoomItem();
+					insertRoom.Item3 = getRandomRoomItem();
+					
+					insertRoom.CreateRoom();
 					break;
 				case 3:
 					//Puzzle
+					insertRoom.RoomType="Puzzle";
+					insertRoom.MapID = userstats.mapID;
+					//get 3 different monsters (character ID)
+					insertRoom.Character1 = getRandomCharacter(false);
+					//character2id = getRandomCharacter(false);
+					//character3id = getRandomCharacter(false);
+					
+					//get random room objects
+					insertRoom.Item1 = getRandomRoomItem();
+					insertRoom.Item2 = getRandomRoomItem();
+					insertRoom.Item3 = getRandomRoomItem();
+					
+					insertRoom.CreateRoom();
 					break;
-				case 4:
+				//case 4:
 					//Stair
-					break;
+					//break;
 				}
 			}
 			
+			// room 9 = puzzle room
+			insertRoom = new Room();
+			insertRoom.RoomNumber = r;
+			insertRoom.RoomType="Puzzle";
+			insertRoom.MapID = userstats.mapID;
+			insertRoom.Character1 = getRandomCharacter(false);			
+			insertRoom.Item1 = getRandomRoomItem();
+			insertRoom.Item2 = getRandomRoomItem();
+			insertRoom.Item3 = getRandomRoomItem();
+			insertRoom.CreateRoom();
+			r++;
+			
+			// room 10 = stair room
+			insertRoom = new Room();
+			insertRoom.RoomNumber = r;
+			insertRoom.RoomType="Stair";
+			insertRoom.MapID = userstats.mapID;
+			insertRoom.Character1 = getRandomCharacter(false);			
+			insertRoom.Item1 = getRandomRoomItem();
+			insertRoom.Item2 = getRandomRoomItem();
+			insertRoom.Item3 = getRandomRoomItem();
+			insertRoom.CreateRoom();
+			r++;
 		}
 	}
 	
-	
+	// General method used to generate any random numbers
 	private static int GetRandomNumber(int min, int max)
 	{		
 		Random rn = new Random();
@@ -181,5 +233,63 @@ public class KnightsTale
 		return rnd;
 	}
 	
+	// Method use to get the character list from DB and generate a random monster to use in the rooms
+	private static int getRandomCharacter(boolean _isBoss) throws Exception
+	{
+		//
+		int isBoss = 0;
+		if(_isBoss) { isBoss = 1;}
+		int[]characters = new int[4];
+		int x=0,rtn=0;
+		
+		Db db = new Db();
+		
+		try 
+		{			
+			db.getConnection();								
+			ResultSet rs = db.executeQry("SELECT * FROM Characters WHERE CharacterType = 'Monster' and isBoss = " + isBoss);
+			while(rs.next())
+			{
+				characters[x] = rs.getInt("CharacterID");
+				x++;
+			}
+			rtn = characters[GetRandomNumber(0,characters.length)];			
+		}
+		catch(Exception ex){}
+		finally
+		{
+			db.closeConnection();
+		}
+			
+		return rtn;
+	}
+	
+	// generate random room items 
+	private static int getRandomRoomItem() throws Exception
+	{
+		int[]items = new int[25];
+		int x=0,rtn=0;
+		
+		Db db = new Db();
+		
+		try 
+		{			
+			db.getConnection();								
+			ResultSet rs = db.executeQry("SELECT * FROM Items WHERE Name <> 'Sword'");
+			while(rs.next())
+			{
+				items[x] = rs.getInt("ItemID");
+				x++;
+			}
+			rtn = items[GetRandomNumber(0,x)];			
+		}
+		catch(Exception ex){}
+		finally
+		{
+			db.closeConnection();
+		}
+			
+		return rtn;
+	}
 	
 }

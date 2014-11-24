@@ -69,7 +69,7 @@ public class Db {
     //Executes the given statement. Use this for adds,deletes,and creates
     //when no additional information will be needed in return.
     public  void executeStmt(String instruction) throws SQLException {
-        statement.executeUpdate(instruction);
+        statement.executeUpdate(instruction);        
     }
  
     // processes an array of instructions e.g. a set of SQL command strings passed from a file
