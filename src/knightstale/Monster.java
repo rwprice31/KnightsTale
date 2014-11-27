@@ -4,11 +4,13 @@ import java.sql.ResultSet;
 
 public class Monster {
 public int CharacterID;
-public String CharacterType = "Monster";
+public String user_name;
+public int RoomNumber;
 public String Name;
 public String ElementType;
-public int InitialHealth;
+public int Health;
 public boolean isBoss;
+public String ItemName;
 	
 public Monster(){}
 
@@ -20,11 +22,13 @@ public Monster(int CharacterID) throws Exception
 	while(rs.next())
 	{
 		CharacterID = rs.getInt("CharactrID");
-		CharacterType = rs.getString("CharacterType");
+		user_name = rs.getString("user_name");
+		RoomNumber = rs.getInt("RoomNumber");		
 		Name = rs.getString("Name");
 		ElementType = rs.getString("ElementType");
-		InitialHealth = rs.getInt("InitialHealth");
+		Health = rs.getInt("Health");
 		isBoss = rs.getBoolean("isBoss");
+		ItemName = rs.getString("ItemName");
 	}
 	db.closeConnection();
 }
