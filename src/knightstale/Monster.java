@@ -9,7 +9,7 @@ public int RoomNumber;
 public String Name;
 public String ElementType;
 public int Health;
-public boolean isBoss;
+public int isBoss;
 public String ItemName;
 	
 public Monster(){}
@@ -18,19 +18,43 @@ public Monster(int CharacterID) throws Exception
 {
 	Db db = new Db();
 	db.getConnection();
-	ResultSet rs = db.executeQry("select CharacterID,CharacterType,Name,ElementType,InitialHealth,isBoss from Characters where UserID = '"+ CharacterID +"'");
+	ResultSet rs = db.executeQry("SELECT CharacterID,CharacterType,Name,ElementType,InitialHealth,isBoss FROM Characters WHERE CharacterID = "+ CharacterID );
 	while(rs.next())
 	{
-		CharacterID = rs.getInt("CharactrID");
+		CharacterID = rs.getInt("CharacterID");
 		user_name = rs.getString("user_name");
 		RoomNumber = rs.getInt("RoomNumber");		
 		Name = rs.getString("Name");
 		ElementType = rs.getString("ElementType");
 		Health = rs.getInt("Health");
-		isBoss = rs.getBoolean("isBoss");
+		isBoss = rs.getInt("isBoss");
 		ItemName = rs.getString("ItemName");
 	}
 	db.closeConnection();
 }
+
+public Monster(String MonsterName) throws Exception
+{
+	Db db = new Db();
+	db.getConnection();
+	ResultSet rs = db.executeQry("SELECT CharacterID,user_name,RoomNumber,Name,ElementType,Health,isBoss,ItemName FROM Characters WHERE name = '" + MonsterName +"'");
+	while(rs.next())
+	{
+		CharacterID = rs.getInt("CharacterID");
+		user_name = rs.getString("user_name");
+		RoomNumber = rs.getInt("RoomNumber");		
+		Name = rs.getString("Name");
+		ElementType = rs.getString("ElementType");
+		Health = rs.getInt("Health");
+		isBoss = rs.getInt("isBoss");
+		ItemName = rs.getString("ItemName");
+	}
+	db.closeConnection();
+}
+
+public void CreateMonster()
+{
+}
+
 
 }

@@ -11,7 +11,7 @@ public String RoomType;
 public String Item1;
 public String Item2;
 public String Item3;
-public int PuzzleID;
+public String PuzzlePassword;
 	
 public Room(){}
 
@@ -28,7 +28,7 @@ public Room(int RoomID) throws Exception
 		Item1 = rs.getString("Item1ID");
 		Item2 = rs.getString("Item2ID");
 		Item3 = rs.getString("Item3ID");		
-		PuzzleID = rs.getInt("PuzzleID");
+		PuzzlePassword = rs.getString("PuzzlePassword");
 	}
 	db.closeConnection();
 }
@@ -39,7 +39,7 @@ public void CreateRoom() throws Exception
 	Db db = new Db();
 	db.getConnection();
 	try {
-		db.executeStmt("INSERT INTO Rooms VALUES(NULL," +"," + RoomNumber + ",'" + RoomType + "'," + Item1 + "," + Item2 + "," + Item3 + ","  + "," + PuzzleID +")" ) ;				
+		db.executeStmt("INSERT INTO Rooms VALUES(NULL," +"," + RoomNumber + ",'" + RoomType + "'," + Item1 + "," + Item2 + "," + Item3 + ","  + ",'" + PuzzlePassword + "')" ) ;				
 	} catch (SQLException e) {	
 	}
 	db.closeConnection();	

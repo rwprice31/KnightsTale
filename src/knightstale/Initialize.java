@@ -58,77 +58,149 @@ public class Initialize {
 	{
 		// auto generate 50 rooms specific to this user_name
 		int r = 1; //room #
+		String floor = "";
+		
 		for(int x=0; x<5;x++) // 5 levels
 		{		
-			Room insertRoom = new Room();
+			switch(x+1)
+			{
+			case 1:
+				floor = "Fire";
+				break;
+			case 2:
+				floor = "Water";
+				break;
+			case 3:
+				floor = "Earth";
+				break;
+			case 4:
+				floor = "Wind";
+				break;
+			case 5:
+				floor = "All";
+				break;
+			}			
+			
+			Room insertRoom = new Room();			
 			// first 8 random rooms
 			for(int y=1; y<=8; y++,r++){
 				insertRoom = new Room();
-				insertRoom.RoomNumber = r;
+				insertRoom.RoomNumber = r;								
+				insertRoom.user_name = user_name; 
+				
+				if (x+1 == 5){
+					switch (GetRandomNumber(0,4))
+					{
+					case 1:
+						floor = "Fire";
+						break;
+					case 2:
+						floor = "Water";
+						break;
+					case 3:
+						floor = "Earth";
+						break;
+					case 4:
+						floor = "Wind";
+						break;
+					}
+				}
+				
 				
 				//create room
-				switch(GetRandomNumber(0,3))				
+				switch(GetRandomNumber(0,4))				
 				{
 				case 1:
 					//Boss
 					insertRoom.RoomType="Boss";
 					
 					//get random room objects
-					insertRoom.Item1 = getRandomRoomItem(insertRoom.RoomType);
-					insertRoom.Item2 = getRandomRoomItem(insertRoom.RoomType);
-					insertRoom.Item3 = getRandomRoomItem(insertRoom.RoomType);
-					
+					insertRoom.Item1 = getRandomRoomItem("Room")[0][0];
+					insertRoom.Item2 = getRandomRoomItem("Room")[0][0];
+					insertRoom.Item3 = getRandomRoomItem("Room")[0][0];					
 					insertRoom.CreateRoom();
+					
+					//Create Monster
+					CreateRandomMonster(floor, 1, user_name, r);
+					
 					break;
 				case 2:
 					//Fight
 					insertRoom.RoomType="Fight";
 					
 					//get random room objects
-					insertRoom.Item1 = getRandomRoomItem(insertRoom.RoomType);
-					insertRoom.Item2 = getRandomRoomItem(insertRoom.RoomType);
-					insertRoom.Item3 = getRandomRoomItem(insertRoom.RoomType);
-					
+					insertRoom.Item1 = getRandomRoomItem("Room")[0][0];
+					insertRoom.Item2 = getRandomRoomItem("Room")[0][0];
+					insertRoom.Item3 = getRandomRoomItem("Room")[0][0];					
 					insertRoom.CreateRoom();
+					
+					//Create Monster
+					CreateRandomMonster(floor, 0, user_name, r);
+					
 					break;
 				case 3:
 					//Puzzle
 					insertRoom.RoomType="Puzzle";
 										
 					//get random room objects
-					insertRoom.Item1 = getRandomRoomItem(insertRoom.RoomType);
-					insertRoom.Item2 = getRandomRoomItem(insertRoom.RoomType);
-					insertRoom.Item3 = getRandomRoomItem(insertRoom.RoomType);
-					
+					String[][] arr1 = getRandomRoomItem(insertRoom.RoomType);
+					String[][] arr2 = getRandomRoomItem(insertRoom.RoomType);
+					String[][] arr3 = getRandomRoomItem(insertRoom.RoomType);					
+					insertRoom.Item1 = arr1[0][0];
+					insertRoom.Item2 = arr2[0][0];
+					insertRoom.Item3 = arr3[0][0];
+					insertRoom.PuzzlePassword = arr1[0][1] + " " + arr2[0][1] + " " + arr3[0][1];
 					insertRoom.CreateRoom();
+					
+					//Create Monster
+					//CreateRandomMonster(floor, 0, user_name, r);
+					
 					break;
 				case 4:
 					//Chest
 					insertRoom.RoomType = "Chest";
+					
+					//get random room objects
+					insertRoom.Item1 = getRandomRoomItem(insertRoom.RoomType)[0][0];
+					insertRoom.Item2 = getRandomRoomItem(insertRoom.RoomType)[0][0];
+					insertRoom.Item3 = getRandomRoomItem(insertRoom.RoomType)[0][0];					
+					insertRoom.CreateRoom();					
+					
+					//Create Monster
+					CreateRandomMonster(floor, 0, user_name, r);
+					
 					break;
 				}
 			}
 			
 			// room 9 = puzzle room
 			insertRoom = new Room();
+			insertRoom.user_name = user_name;
 			insertRoom.RoomNumber = r;
 			insertRoom.RoomType="Puzzle";
 						
-			insertRoom.Item1 = getRandomRoomItem(insertRoom.RoomType);
-			insertRoom.Item2 = getRandomRoomItem(insertRoom.RoomType);
-			insertRoom.Item3 = getRandomRoomItem(insertRoom.RoomType);
+			String[][] arr1 = getRandomRoomItem(insertRoom.RoomType);
+			String[][] arr2 = getRandomRoomItem(insertRoom.RoomType);
+			String[][] arr3 = getRandomRoomItem(insertRoom.RoomType);					
+			insertRoom.Item1 = arr1[0][0];
+			insertRoom.Item2 = arr2[0][0];
+			insertRoom.Item3 = arr3[0][0];
+			insertRoom.PuzzlePassword = arr1[0][1] + " " + arr2[0][1] + " " + arr3[0][1];
 			insertRoom.CreateRoom();
+			//Create Monster
+			//CreateRandomMonster(floor, 0, user_name, r);			
 			r++;
 			
 			// room 10 = stair room
 			insertRoom = new Room();
+			insertRoom.user_name = user_name;
 			insertRoom.RoomNumber = r;
 			insertRoom.RoomType="Stair";
-;			
-			insertRoom.Item1 = getRandomRoomItem(insertRoom.RoomType);
-			insertRoom.Item2 = getRandomRoomItem(insertRoom.RoomType);
-			insertRoom.Item3 = getRandomRoomItem(insertRoom.RoomType);
+			
+			insertRoom.Item1 = getRandomRoomItem(insertRoom.RoomType)[0][0];
 			insertRoom.CreateRoom();
+			//Create Monster
+			//CreateRandomMonster(floor, 0, user_name, r);			
 			r++;
 		}
 	}
@@ -146,26 +218,39 @@ public class Initialize {
 	}
 	
 	// Method use to get the character list from DB and generate a random monster to use in the rooms
-	private static int getRandomCharacter(boolean _isBoss) throws Exception
-	{
-		//
-		int isBoss = 0;
-		if(_isBoss) { isBoss = 1;}
-		int[]characters = new int[4];
-		int x=0,rtn=0;
+	private static void CreateRandomMonster(String floor, int isBoss, String user_name, int roomNumber) throws Exception
+	{	
+		String[]items = new String[25];
+		String tempBoss = "";
+		int x=0;
 		
 		Db db = new Db();
+		
+		Monster monster = new Monster();
+		monster.ElementType = floor;
+		if (isBoss == 1){
+			monster.Health = 10;
+			monster.Name = "Boss " + floor + " Monster";} 
+		else {
+			monster.Health = 5;
+			monster.Name =  floor + " Monster";
+			tempBoss = " AND isBoss = '0'";}
+		monster.isBoss = isBoss;
+		monster.RoomNumber = roomNumber;
+		monster.user_name = user_name;		
 		
 		try 
 		{			
 			db.getConnection();								
-			ResultSet rs = db.executeQry("SELECT * FROM Characters WHERE CharacterType = 'Monster' and isBoss = " + isBoss);
+			ResultSet rs = db.executeQry("SELECT * FROM items WHERE Type = '" + floor + " Monster' " + tempBoss);
 			while(rs.next())
 			{
-				characters[x] = rs.getInt("CharacterID");
+				items[x] = rs.getString("Name");
 				x++;
 			}
-			rtn = characters[GetRandomNumber(0,characters.length)];			
+			monster.ItemName =  items[GetRandomNumber(0,x)];			
+			
+			monster.CreateMonster();
 		}
 		catch(Exception ex){}
 		finally
@@ -173,28 +258,28 @@ public class Initialize {
 			db.closeConnection();
 		}
 			
-		return rtn;
 	}
 	
 	// generate random room items 
-	private static String getRandomRoomItem(String RoomType) throws Exception
+	private static String[][] getRandomRoomItem(String RoomType) throws Exception
 	{
-		int[]items = new int[50];
+		String[][]items = new String[50][2];
 		int x=0;
-		String rtn = "";
+		String[][] rtn = new String[1][2];
 		
 		Db db = new Db();
 		
 		try 
 		{			
 			db.getConnection();								
-			ResultSet rs = db.executeQry("SELECT * FROM Items WHERE Name <> 'Sword'");
+			ResultSet rs = db.executeQry("SELECT * FROM Items WHERE type = '" + RoomType ) ;
 			while(rs.next())
 			{
-				items[x] = rs.getInt("ItemID");
+				items[x][0] = rs.getString("Name");
+				items[x][1] = rs.getString("Keyword");
 				x++;
 			}
-			rtn = items[GetRandomNumber(0,x)];			
+			rtn[0] = items[GetRandomNumber(0,x)];	
 		}
 		catch(Exception ex){}
 		finally

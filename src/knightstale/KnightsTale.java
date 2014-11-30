@@ -9,7 +9,8 @@ public class KnightsTale
 	
 	public static void main(String[] args) throws Exception 
 	{		
-		UserStatistics userstats = new Initialize().GetUserStats();
+		UserStatistics userstats = new Initialize("dave").GetUserStats();
+		System.console().printf(userstats.userID);
 	}
 		
 }
