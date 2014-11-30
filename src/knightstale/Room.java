@@ -39,7 +39,8 @@ public void CreateRoom() throws Exception
 	Db db = new Db();
 	db.getConnection();
 	try {
-		db.executeStmt("INSERT INTO Rooms VALUES(NULL," +"," + RoomNumber + ",'" + RoomType + "'," + Item1 + "," + Item2 + "," + Item3 + ","  + ",'" + PuzzlePassword + "')" ) ;				
+		String statement = "INSERT INTO Rooms VALUES(NULL,'" + user_name + "'," + RoomNumber + ",'" + RoomType + "','" + Item1 + "','" + Item2 + "','" + Item3 + "','"  + PuzzlePassword + "', 0)";
+		db.executeStmt(statement) ;				
 	} catch (SQLException e) {	
 	}
 	db.closeConnection();	

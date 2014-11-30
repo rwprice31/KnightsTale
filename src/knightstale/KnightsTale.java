@@ -3,14 +3,14 @@ package knightstale;
 
 public class KnightsTale 
 {
-	// global variable to help keep track of user status
-	public static UserStatistics userstats = new UserStatistics();
-	
 	
 	public static void main(String[] args) throws Exception 
 	{		
-		UserStatistics userstats = new Initialize("dave").GetUserStats();
-		System.console().printf(userstats.userID);
+		String user_name = "dave"; 
+		Initialize.CreateRooms(user_name);
+		// can also be used as
+		// Initialize.CreateRooms(UserStatistics.user_name);
+			
 	}
 		
 }

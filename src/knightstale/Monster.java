@@ -1,5 +1,6 @@
 package knightstale;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
 public class Monster {
@@ -52,8 +53,16 @@ public Monster(String MonsterName) throws Exception
 	db.closeConnection();
 }
 
-public void CreateMonster()
+public void CreateMonster() throws Exception
 {
+	Db db = new Db();
+	db.getConnection();
+	try {
+		String statement = "INSERT INTO Characters VALUES(NULL,'" + user_name + "'," + RoomNumber + ",'" + Name + "','" + ElementType + "'," + Health + "," + isBoss + ",'" + ItemName + "')";
+		db.executeStmt(statement) ;				
+	} catch (SQLException e) {	
+	}
+	db.closeConnection();
 }
 
 
