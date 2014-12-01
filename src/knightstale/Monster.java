@@ -15,21 +15,21 @@ public String ItemName;
 	
 public Monster(){}
 
-public Monster(int CharacterID) throws Exception
+public Monster(String user_name, int RoomNumber) throws Exception
 {
 	Db db = new Db();
 	db.getConnection();
-	ResultSet rs = db.executeQry("SELECT CharacterID,CharacterType,Name,ElementType,InitialHealth,isBoss FROM Characters WHERE CharacterID = "+ CharacterID );
+	ResultSet rs = db.executeQry("SELECT * FROM Characters WHERE user_name = '"+ user_name + "' AND RoomNumber = " + RoomNumber  );
 	while(rs.next())
 	{
-		CharacterID = rs.getInt("CharacterID");
-		user_name = rs.getString("user_name");
-		RoomNumber = rs.getInt("RoomNumber");		
-		Name = rs.getString("Name");
-		ElementType = rs.getString("ElementType");
-		Health = rs.getInt("Health");
-		isBoss = rs.getInt("isBoss");
-		ItemName = rs.getString("ItemName");
+		this.CharacterID = rs.getInt("CharacterID");
+		this.user_name = rs.getString("user_name");
+		this.RoomNumber = rs.getInt("RoomNumber");		
+		this.Name = rs.getString("Name");
+		this.ElementType = rs.getString("ElementType");
+		this.Health = rs.getInt("Health");
+		this.isBoss = rs.getInt("isBoss");
+		this.ItemName = rs.getString("ItemName");
 	}
 	db.closeConnection();
 }
@@ -38,17 +38,17 @@ public Monster(String MonsterName) throws Exception
 {
 	Db db = new Db();
 	db.getConnection();
-	ResultSet rs = db.executeQry("SELECT CharacterID,user_name,RoomNumber,Name,ElementType,Health,isBoss,ItemName FROM Characters WHERE name = '" + MonsterName +"'");
+	ResultSet rs = db.executeQry("SELECT * FROM Characters WHERE name = '" + MonsterName +"'");
 	while(rs.next())
 	{
-		CharacterID = rs.getInt("CharacterID");
-		user_name = rs.getString("user_name");
-		RoomNumber = rs.getInt("RoomNumber");		
-		Name = rs.getString("Name");
-		ElementType = rs.getString("ElementType");
-		Health = rs.getInt("Health");
-		isBoss = rs.getInt("isBoss");
-		ItemName = rs.getString("ItemName");
+		this.CharacterID = rs.getInt("CharacterID");
+		this.user_name = rs.getString("user_name");
+		this.RoomNumber = rs.getInt("RoomNumber");		
+		this.Name = rs.getString("Name");
+		this.ElementType = rs.getString("ElementType");
+		this.Health = rs.getInt("Health");
+		this.isBoss = rs.getInt("isBoss");
+		this.ItemName = rs.getString("ItemName");
 	}
 	db.closeConnection();
 }
