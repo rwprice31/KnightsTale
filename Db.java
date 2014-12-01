@@ -18,7 +18,7 @@ public class Db {
     private  Connection conn = null;
     private  Statement statement = null;
     private String sDriverToLoad = "org.sqlite.JDBC";
-    private String sUrlToLoad = "jdbc:sqlite:/New Folder/AKnightTale.db";
+    private String sUrlToLoad = "jdbc:sqlite:/AKnightTaleSQL/AKnightTale.db";
 
  
     //This will connect to the database 
