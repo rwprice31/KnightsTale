@@ -16,26 +16,45 @@ public int isVisited;
 	
 public Room(){}
 
-public Room(String user_name, int RoomNumber) throws Exception
+public Room(String _user_name, int _RoomNumber) throws Exception
 {
 	Db db = new Db();
 	db.getConnection();
-	ResultSet rs = db.executeQry("SELECT * FROM Rooms WHERE RoomNumber = '"+ RoomNumber +"' AND user_name = '" + user_name +"'");
+	ResultSet rs = db.executeQry("SELECT * FROM Rooms WHERE RoomNumber = '"+ _RoomNumber +"' AND user_name = '" + _user_name +"'");
 	while(rs.next())
 	{
-		RoomID = rs.getInt("RoomID");
+		this.RoomID = rs.getInt("RoomID");
 		this.user_name = rs.getString("user_name");
 		this.RoomNumber = rs.getInt("RoomNumber");
-		RoomType = rs.getString("RoomType");
-		Item1 = rs.getString("Item1");
-		Item2 = rs.getString("Item2");
-		Item3 = rs.getString("Item3");		
-		PuzzlePassword = rs.getString("PuzzlePassword");
-		isVisited = rs.getInt("Visited");
+		this.RoomType = rs.getString("RoomType");
+		this.Item1 = rs.getString("Item1");
+		this.Item2 = rs.getString("Item2");
+		this.Item3 = rs.getString("Item3");		
+		this.PuzzlePassword = rs.getString("PuzzlePassword");
+		this.isVisited = rs.getInt("Visited");
 	}
 	db.closeConnection();
 }
 
+@Override public String toString()
+{
+	String rtn = "";
+	String[] temp;
+	
+	try {
+		temp = Dialog.GetRoomDialog("dave",  1);
+		for(int y=0;y<temp.length;y++)
+		{
+			rtn += temp[y] + "\n ";
+		}
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}	
+
+	
+	return rtn;
+}
 
 public void CreateRoom() throws Exception
 {

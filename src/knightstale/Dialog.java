@@ -41,6 +41,4 @@ public static String[] GetRoomDialog(String user_name, int RoomNumber) throws Ex
 }
 
 
-
-
 }

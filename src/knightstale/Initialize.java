@@ -6,6 +6,7 @@ public class Initialize {
 	
 	public Initialize(){}
 	
+	
 	// Method use to create all rooms to be populated in the map layout of the game.
 	public static boolean CreateRooms(String user_name) throws Exception 
 	{
@@ -169,7 +170,7 @@ public class Initialize {
 		}
 		return rtn;
 	}
-	
+
 	
 	
 	// General method used to generate any random numbers
